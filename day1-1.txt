@@ -1,0 +1,11 @@
+###一、浏览器数据抓包
+##GET请求：
+例：https://www.baidu.com/s?wd=%E8%8B%8D%E8%80%81%E5%B8%88&rsv_spt=1&rsv_iqid=0xad707ee600011b25&issp=1&f=8&rsv_bp=1&rsv_idx=2&ie=utf-8&rqlang=cn&tn=baiduhome_pg&rsv_enter=0&oq=%25E8%258B%258D%25E8%2580%2581%25E5%25B8%2588&rsv_t=5d8eqNDy4ZpyUOz7ByzyIMYfH5Jc7861dr4CFQaY3WCiDnOpBLob6Eouk23%2F3L%2BTD46O&rsv_sug3=15&rsv_pq=996e776f0000df06&rsv_sug4=19123
+URL中？后面是 GET 请求的参数，这些参数以「键值对」的形式实现
+
+##POST请求：主要存在于做一些信息提交，如注册、登陆。
+POST 的参数不会直接放在 URL 上，会以 Form 表单的形式将数据提交给服务器
+例：password: WpC1SGuAKOvXifXkdeMLCkPold6uhRzxLb0zqsA1lbG76SJHKIrWwlOrasiT3y6DHlHxnyEqqObCSqPF1UoBxzr4KttsqTfaP1KqsjaMhv3+g8O0SX103PXXuKzRuGVAG2kYdPNPaQ8mXCgKYbEDKN8qTnNjwZ+FrCwvD0v803I=
+总结：GET请求把请求参数都暴露在URL上，而POST请求的参数放在request body 里面，POST请求方式还对密码参数加了密。
+
+###二、通过Fiddler进行手机抓包
