@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 import xlwt
 
 
-browser = webdriver.PhantomJS()
+browser = webdriver.Chrome()
 WAIT = WebDriverWait(browser, 10)
 browser.set_window_size(1400,900)
 
@@ -27,15 +27,15 @@ n=1
 def search():
 
     try:
-        print('开始访问b站....')
+        print('开始访问b站搜索页....')
         browser.get("https://www.bilibili.com/")
 
         # 被那个破登录遮住了
-        index = WAIT.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#primary_menu > ul > li.home > a > div")))
+        index = WAIT.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#primaryPageTab > ul > li:nth-child(1) > a > div > i")))
         index.click()
 
-        input = WAIT.until(EC.presence_of_element_located((By.CSS_SELECTOR, '//*[@id="banner_link"]/div/div/form/input')))
-        submit = WAIT.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="banner_link"]/div/div/form/button')))
+        input = WAIT.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#nav_searchform > input')))
+        submit = WAIT.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="nav_searchform"]/div/button')))
 
         input.send_keys('蔡徐坤 篮球')
         submit.click()
@@ -54,10 +54,10 @@ def search():
 
 def next_page(page_num):
     try:
-        print('获取第'+ str(page_num)+'页数据：')
+        print('获取下一页数据')
         next_btn = WAIT.until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#all-list > div.flow-loader > div.page-wrap > div > ul > li.page-item.next > button')))
         next_btn.click()
-        WAIT.until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, '#all-list > div.flow-loader > div.page-wrap > div > ul > li.page-item.active > button'),str(page_num)))
+        WAIT.until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, '#all-list > div.flow-loader > div.page-wrap > div > ul > li.page-item.next > button'),str(page_num)))
         get_source()
     except TimeoutException:
         browser.refresh()
@@ -65,32 +65,30 @@ def next_page(page_num):
 
 
 def save_to_excel(soup):
-    list = soup.find(class_='all-contain').find_all(class_='info')
+    list = soup.find(class_='video-list clearfix').find_all('li')
 
     for item in list:
         item_title = item.find('a').get('title')
         item_link = item.find('a').get('href')
-        item_dec = item.find(class_='des hide').text
+        item_upname = item.find(class_='up-name').text
         item_view = item.find(class_='so-icon watch-num').text
         item_biubiu = item.find(class_='so-icon hide').text
         item_date = item.find(class_='so-icon time').text
 
         print('爬取：' + item_title)
-
         global n
 
         sheet.write(n, 0, item_title)
         sheet.write(n, 1, item_link)
-        sheet.write(n, 2, item_dec)
+        sheet.write(n, 2, item_upname)
         sheet.write(n, 3, item_view)
         sheet.write(n, 4, item_biubiu)
         sheet.write(n, 5, item_date)
-
         n = n + 1
 
 
 def get_source():
-    WAIT.until(EC.presence_of_element_located((By.CSS_SELECTOR,'#server-search-app > div.contain > div.body-contain > div > div.result-wrap.clearfix')))
+    WAIT.until(EC.presence_of_element_located((By.CSS_SELECTOR,'#all-list > div.flow-loader > div.mixin-list > ul')))
     html = browser.page_source
     soup = BeautifulSoup(html,'lxml')
     save_to_excel(soup)
@@ -110,4 +108,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    book.save(r'/Users/jason/Desktop/蔡徐坤篮球.xlsx')
+    book.save(r'/Users/jason/Desktop/蔡徐坤篮球.xls')
