@@ -9,7 +9,6 @@ class CustomThread(threading.Thread):
         self.__queue = queue
 
     def run(self):
-        while True:
             q_method = self.__queue.get()
             q_method()
             self.__queue.task_done()
